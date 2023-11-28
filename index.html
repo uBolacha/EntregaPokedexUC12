@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <ul id="pokemon-list">
+    </ul>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const apiUrl = 'https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20';
+    
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+            const pokemonList = document.getElementById('pokemon-list');
+    
+            data.results.forEach(pokemon => {
+                const individualPokemonUrl = pokemon.url;
+    
+                fetch(individualPokemonUrl)
+                .then(response => response.json())
+                .then(individualData => {
+                    const imageUrl = individualData.sprites.front_default;
+                    const typeTipo = individualData.type;
+    
+                    const listItem = document.createElement('li');
+                    const name = document.createElement('span');
+                    const image = document.createElement('img');
+                    const tipo = document.createElement('div');  
+    
+                    image.src = imageUrl;
+                    image.alt = pokemon.name;
+                    name.textContent = pokemon.name;
+    
+                    individualData.types.forEach(type => {
+                    const typeImg = document.createElement('img');
+                    typeImg.src = type.url;
+                    typeImg.alt = type.type.name;
+                    tipo.appendChild(typeImg);
+                    });
+    
+                    listItem.appendChild(image);
+                    listItem.appendChild(tipo);
+                    listItem.appendChild(name);
+                    pokemonList.appendChild(listItem);
+                })
+            });
+            })
+        });
+    </script>
+</body>
+</html>
